@@ -1,0 +1,15 @@
+---
+- name: Create the custom security group
+  ansible.builtin.group:
+    name: "{{ user_groups }}"
+    state: present
+  become: yes
+
+- name: Create the system user account
+  ansible.builtin.user:
+    name: "{{ username }}"
+    shell: "{{ user_shell }}"
+    groups: "{{ user_groups }}"
+    append: yes
+    state: present
+  become: yes

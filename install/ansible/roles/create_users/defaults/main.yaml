@@ -1,0 +1,3 @@
+username: "kadmin"
+user_shell: "/bin/bash"
+user_groups: "kadmins"

@@ -1,7 +1,14 @@
 ---
 - name: Provision AWX Operator on kubernetes node
   hosts: control_node
+  vars:
+    kubernetes_admin_user: kadmin
   roles:
     - role: create_users
-#    - role: install_k3s
-#    - role: install_awx_operator
+      vars:
+        username: "{{ kubernetes_admin_user }}"
+    - role: provision_kubernetes
+      vars:
+        username: "{{ kubernetes_admin_user }}"
+    - role: provision_kustomize
+  #  - role: install_awx_operator

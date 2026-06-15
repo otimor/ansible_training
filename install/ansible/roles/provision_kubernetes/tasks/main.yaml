@@ -1,0 +1,17 @@
+---
+- name: Collect serices information
+  ansible.builtin.service_facts:
+
+- name: Install k3s
+  ansible.builtin.shell:
+    cmd: curl -sfL https://get.k3s.io | sh -
+  become: yes
+  when: "'k3s.service' not in ansible_facts.services"
+
+- name: Set permision to config file for user {{ username }}
+  ansible.builtin.file:
+    path:  /etc/rancher/k3s/k3s.yaml
+    owner: "{{ username }}" 
+  become: yes
+
+

@@ -1,0 +1,42 @@
+---
+- name: Verify if kustomize is installed
+  ansible.builtin.stat:
+    path: "{{ kustomize_path }}/kustomize"
+  register: file_check
+
+- name: Install kustomize
+  block: 
+    - name: Provision requirements
+      ansible.builtin.package:
+        state: present
+        name:
+          - tar
+      become: yes
+
+    - name: Remove old kustomize from working directory if exists
+      ansible.builtin.file:
+        path: "./kustomize"
+        state: absent
+
+    - name: Deploy kustomize script
+      ansible.builtin.shell:
+        cmd: curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+
+    - name: Move script to path {{ kustomize_path }}"
+      ansible.builtin.copy:
+        src: "./kustomize"
+        dest: "{{ kustomize_path }}"
+        remote_src: yes 
+      become: yes
+
+    - name: Remove kustomize from working directory
+      ansible.builtin.file:
+        path: "./kustomize"
+        state: absent
+      become: yes
+
+  when: not file_check.stat.exists
+
+
+
+
